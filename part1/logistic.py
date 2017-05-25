@@ -20,7 +20,7 @@ class LogisticModel(object):
         X, Y = shuffle(X, Y)
         Xvalid, Yvalid = X[-1000:], Y[-1000:]
         X, Y = X[:-1000], Y[:-1000]
-        
+        Tvalid = y2indicator(Yvalid)
         N,D = X.shape
         K = len(set(Y))
         T = y2indicator(Y)
@@ -28,7 +28,48 @@ class LogisticModel(object):
         self.W = np.random.randn(D, K)/ np.sqrt(D+K)
         self.b = np.zeros(K)
         
-        cost = []
+        costs = []
         best_valiidation_error = 1
         
-        for
+        for i in xrange(epochs):
+            pY = self.forward(X)
+            
+            #gradient descent
+            self.W -= learning_rate*(X.T.dot(pY-T) + reg*self.W)
+            self.b -= learning_rate*((pY-T).sum(axis = 0) + reg*self.b)
+            
+            if i%10 == 0:
+                pYvalid = self.forward(Xvalid)
+                c = cost(Tvalid, pYvalid)
+                costs.append(c)
+                e = error_rate(Tvalid, np.argmax(pYvalid, axis = 1))
+                print "i:", i, 
+                
+                if e < best_valiidation_error:
+                    best_valiidation_error = e
+                    
+        print "best validation error:", best_valiidation_error
+        
+        if show_fig:
+            plt.plot(costs)
+            plt.show()
+            
+    def forward(self, X):
+        return softmax(X.dot(self.W)+self.b)
+        
+    def predict(self, X):
+        pY = self.forward(X)
+        return np.argmax(pY, axis = 1)
+        
+    def score(self, X, Y):
+        prediction = self.predict(X)
+        return 1 - error_rate(Y, prediction)
+        
+def main():
+    X, Y = getData()
+    model = LogisticModel()
+    model.fit(X, Y)
+    print model.score(X, Y)
+
+if __name__ == '__main__':
+    main()
