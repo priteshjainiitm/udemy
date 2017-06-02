@@ -49,7 +49,7 @@ def main():
     for i in xrange(max_iter):
         for j in xrange(n_batches):
             Xbatch = Xtrain[j*batch_sz:(j*batch_sz + batch_sz),]
-            Ybatch  = Ytrain[j*batch_sz:(j*batch_sz+batch_sz)]
+            Ybatch  = Ytrain_ind[j*batch_sz:(j*batch_sz+batch_sz)]
             pYbatch, Z = forward(Xbatch, W1, b1, W2, b2)
             
             #updates
