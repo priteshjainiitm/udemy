@@ -119,7 +119,7 @@ class SimpleRNN:
         bh = npz['arr_3']
         h0 = npz['arr_4']
         Wo = npz['arr_5']
-        Wo = npz['arr_6']
+        bo = npz['arr_6']
         
         V, D = We.shape
         _, M = Wx.shape
